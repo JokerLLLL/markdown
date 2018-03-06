@@ -1,0 +1,52 @@
+﻿tail -f /tmp/date.txt  #实时更新
+tail -3 /tmp/date.txt  #最后三行
+date +%w               #返回星期几
+test 1 = 0             #测试语句
+echo $?                #返回最后一个语句生成的值
+cat /proc/cpuinfo      #查看cup
+fdisk  -l              #查看硬盘
+ifconfig -a            #查看网卡
+
+
+#查看进程
+ps aux|grep server.php        #查看进程
+pstree -ap|grep server.php    #查看进程树
+
+## kill命令
+kill -l    所有信号
+以下为中断信号：
+    HUP     1    终端断线
+    INT     2    中断（同 Ctrl + C）
+    QUIT    3    退出（同 Ctrl + \）
+    TERM   15    终止
+    KILL    9    强制终止
+    CONT   18    继续（与STOP相反， fg/bg命令）
+    STOP   19    暂停（同 Ctrl + Z）
+
+kill -SIGUSR1 7259  #重启配置文件
+
+#端口查看
+lsof -i:9505
+netstat -anp|grep 9505
+
+#tar命令
+tar -xzvf file.tar.gz
+tar -xjvf file.tar.bz2
+
+#编译安装
+./configure
+make
+make install
+make test       #测试是否完成安装
+
+#文件命令
+cp  xxx.tar.gz  /usr/local/    #复制文件
+mv  *.php  1/                  #移除文件到1下*****
+mv  1.txt  1.html              #重名
+rm  -rf   1.html               #强制删除
+
+#swoole编译安装
+phpize                                #关联到PHP拓展库
+./configure   --enable-async-redis    #启用异步redis  需要安装hiredis  C客户端的支持
+make                                  #编译
+sudo make install                     #编译安装
