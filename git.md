@@ -2,7 +2,7 @@
 
 查看仓库状态        git status
 
-预提交仓库          git add *
+预提交仓库          git add .
 
 移除缓存            git rm -cached
 
@@ -10,7 +10,7 @@
 
 查看所有commit记录  git log
 
-查看分支所在位置     git branch
+查看分支所在位置    git branch
 
 新建分支            git branch test1
 
@@ -28,7 +28,7 @@
 
 删除分支           git branch -d test1
 
-                  git branch -D test1  [强制删除]
+                   git branch -D test1  [强制删除]
 
 标签历史           git tag
 
@@ -49,9 +49,9 @@ Push & Pull
 
 关联本地和远程仓库 git remote add origin    [origin]为仓库设置的名称
 
-设置全局姓名邮箱   git config --global user.name "JokerLLLL"
+设置全局姓名邮箱   git config --global user.name "jokerl"
 
-                  git config --global user.email "145645529@qq.com"
+                   git config --global user.email "145645529@qq.com"
 
 别名配置alias     git config --global alias.co checkou #别名
 
