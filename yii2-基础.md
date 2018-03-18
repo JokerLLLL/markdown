@@ -68,3 +68,27 @@ session + cookie :
 
 
 配置：
+
+//初始一个对象配置
+$config = [
+  'class'=>'yii\db\Connetion',
+  'dsn'=>'mysql:host=127.0.0.1;dbname=demo',
+  'username'=>'root',
+  'password'=>'',
+  'charset'=>'utf8',
+];
+$db = Yii::createObject($config);
+
+//重设已存在对象
+Yii::configure($object,$config);
+
+yii\web\Applicatin::component 配置：
+defined('YII_ENV') or define('YII_ENV','dev');
+if(YII_ENV){
+   $config['bootstrap'][] = 'debug'
+   //....
+}
+return $config;
+
+别名：
+Yii::setAlias('@foo', '/path/to/foo');
