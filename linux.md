@@ -50,3 +50,6 @@ phpize                                #关联到PHP拓展库
 ./configure   --enable-async-redis    #启用异步redis  需要安装hiredis  C客户端的支持
 make                                  #编译
 sudo make install                     #编译安装
+
+#find 查找
+find / -name nginx*                   #匹配所有nginx的目录以及文件
