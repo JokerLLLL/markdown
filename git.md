@@ -65,7 +65,8 @@ Push & Pull
 
                   git config --global alias.plm 'pull origin master'
 
-   #git lg        git config --global alias.lg 'log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative'
+   #git lg        git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
+
 
 其他配置          git config --global core.editor "vim"
 
@@ -76,5 +77,5 @@ Push & Pull
 ~/.gitconfig 文件 git config -l
 
 比较命令diff(比较add之前的改动）
-                 
+
                   git diff
