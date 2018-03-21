@@ -67,7 +67,7 @@ session + cookie :
 ####################
 
 
-配置：
+#配置：
 
 //初始一个对象配置
 $config = [
@@ -92,3 +92,35 @@ return $config;
 
 别名：
 Yii::setAlias('@foo', '/path/to/foo');
+
+
+#数据访问DAO：
+
+\yii\db\Connectionp;配置
+$db = \Yii::$app->db; 或 new \yii\db\Connection($conf);
+
+$command = $db ->createCommand($sql);
+  getSql();
+  bindValues(':id',$id);
+  bindValues([':id'=>$id]);
+  bindParam([':id'=>$id]);
+  batchInsert('ts_name',['name','vip_num'],array(['xxx1',1],['xxx2',2],['xxx3',3]));
+  queryAll();
+  queryOne();
+  execute();
+
+$transaction = $db->beginTransaction;
+try{
+    $transaction->commit();
+}catch(\Exception $e) {
+    $transaction->rollBack();
+}
+
+ ActiveRecord  QueryBuilder  modle类和查询类
+
+ $rows = (new \yii\db\Query())
+    ->select(['id', 'email'])
+    ->from('user')
+    ->where(['last_name' => 'Smith'])
+    ->limit(10)
+    ->all();

@@ -53,3 +53,4 @@ sudo make install                     #编译安装
 
 #find 查找
 find / -name nginx*                   #匹配所有nginx的目录以及文件
+
