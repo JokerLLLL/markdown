@@ -100,7 +100,7 @@ Yii::setAlias('@foo', '/path/to/foo');
 $db = \Yii::$app->db; 或 new \yii\db\Connection($conf);
 
 $command = $db ->createCommand($sql);
-  getSql();
+  getRawSql();
   bindValues(':id',$id);
   bindValues([':id'=>$id]);
   bindParam([':id'=>$id]);
@@ -116,7 +116,8 @@ try{
     $transaction->rollBack();
 }
 
- ActiveRecord  QueryBuilder  modle类和查询类
+ 
+ 查询构建器：yii\db\Query;
 
  $rows = (new \yii\db\Query())
     ->select(['id', 'email'])
@@ -124,3 +125,46 @@ try{
     ->where(['last_name' => 'Smith'])
     ->limit(10)
     ->all();
+
+    all()：将返回一个由行组成的数组，每一行是一个由名称和值构成的关联数组（译者注：省略键的数组称为索引数组）。
+    one()：返回结果集的第一行。
+    column()：返回结果集的第一列。
+    scalar()：返回结果集的第一行第一列的标量值。
+    exists()：返回一个表示该查询是否包结果集的值。
+    count()：返回 COUNT 查询的结果。
+    average()
+    batch()
+    createCommand()
+    distinct()
+    from() 
+    groupBy()
+    having() 
+    innerJoin()
+    join() 
+    max() 
+    min() 
+    one() 
+    params()
+    select() 
+    union()
+    where()
+
+ AR模型：yii\db\ActiveQuery;
+    yii\db\ActiveRecord::find() 返回查询构建器
+    findOne()
+    findAll()
+    findOne(1)->updateCounters(['count' => 1]);  // UPDATE `post` SET `count` = `count` + 1 WHERE `id` = 1;
+
+    脏属性：
+    yii\db\ActiveRecord::save() 保存 AR 实例时，只有 脏属性 被保存。 (===判读) 
+    ->getDirtyAttributes()  //脏属性
+    ->getOldAttributes()    //原属性
+
+    updateAll()
+    updateAllCounters(['age'=>1]);  //UPDATE `customer` SET `age` = `age` + 1;
+
+    ->delete()
+    ->deleteAll()
+
+  AR周期：
+    
