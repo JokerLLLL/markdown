@@ -162,7 +162,69 @@ server {
       add_header Access-Control-Allow-Origin GET,POST,PUT,DELETE,OPTIONS;
     }
 
+##防盗链
+    http_refer 模块(nginx变量)  server,location
+    location / {
+      valid_referers none blocked  [www.baidu.com 127.0.01 ...]
+      if ($invalid_referer) {
+        return 403;
+      }
+    }
+
+
 
 #代理服务
+  proxy_pass url nginx代理 location if in location limit_except
+
+  http方向代理：
+
+  #访问test.com/test_proxy.html时 方向代理到8080端口 (80端口对外开放)
+  server {
+    listen 80;
+    server_name localhost test.com;
+
+    location / {
+      root /usr/html;
+      index index.html index.php;
+    }
+
+    location ~ /test_proxy.html$ {
+      proxy_pass http://127.0.0.1:8080;
+    }
+  }
+
+  server {
+    listen 8080;
+    location / {
+      root /usr/html/index/
+      index default.html;
+    }
+  }
+
+  http正向代理：
+    #  一下服务器外网无法访问 所有加层正向代理
+    #  server {
+    #    listen 80;
+    #    location / {
+    #      if($http_x_forwarded_for !~* "^127\.0\.0\.1") {  #允许访问的ip
+    #        return 403;
+    #      }
+    #      root /opt/app/code;
+    #      index index.html;
+    #    }
+    #  }
+
+    代理设置
+    server {
+      listen 80;
+      server_name  xx.xx.xx.xx j.com;
+      resoler 8.8.8.8;  #dns服务器
+      location / {
+         proxy_pass http://$http_host$request_url;
+      }
+    }
+
+
+
 #负载均衡调度器
 #动态缓存
