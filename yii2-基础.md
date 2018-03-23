@@ -167,4 +167,67 @@ try{
     ->deleteAll()
 
   AR周期：
+    实例化：
+    init()
+
+    查询：
+    init()
+    afterFind()
+
+    保存数据：
+    save()
+    beforeValidate()
+    afterValidate()
+    beforeSave()
+    afterSave()
     
+    删除数据delete()：
+    beforeDelete()
+    afterDelete()
+
+    注(以下方法直接执行sql 不会触发生命周期)：
+    updateAll() deleteAll() updateCounters() updateAllCounters()
+
+    try{
+
+      }catch(\Exception $e){
+        $transaction ->rollBack();
+      }catch(\Throwable $e){
+        $transaction ->rollBack();
+      }
+
+  乐观锁：
+   了解一下yii\db\ActiveRecord::optimisticLock()
+
+
+  关联数据：
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+    ①关联数据后可用with查询构建器 但查询字段要带上关联条件：
+    ->with(['orders'=>function($query){
+         $query ->select('customer_id,xxx')
+      }])
+
+    ②直接使用属性：
+    $obj = Modle::findOne(1);
+    $obj->orders;         //返回AR实例
+    $obj->getOrders();    //返回条件构建 AQ模型(查询构建器)
+
+    with的延迟加载(减少sql)：
+    // SELECT * FROM `customer` LIMIT 100;
+    // SELECT * FROM `orders` WHERE `customer_id` IN (...)
+    $customers = Customer::find()
+        ->with('orders')
+        ->limit(100)
+        ->all();
+
+    foreach ($customers as $customer) {
+        // 没有任何的 SQL 执行
+        $orders = $customer->orders;
+    }
+
+
+
+
