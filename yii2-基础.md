@@ -57,14 +57,14 @@ session + cookie :
 
 
 组件；属性；事件；行为；
-####################
+<!-- ###############
 #                  #
 #                  #
 #                  #
 #                  #
 #                  #
 #                  #
-####################
+################ -->
 
 
 #配置：
@@ -227,6 +227,51 @@ try{
         // 没有任何的 SQL 执行
         $orders = $customer->orders;
     }
+
+    //选择额外的字段  (下面的方法都可以写到AR模型中  使用__get __set 方法去构建属性访问)
+    $rooms = Room::find()
+    ->select([
+        '{{room}}.*', // select all columns
+        '([[length]] * [[width]] * [[height]]) AS volume', // 计算体积
+    ])
+    ->orderBy('volume DESC') // 使用排序
+    ->all();
+
+    //AR类构建 然后直接访问volume属性
+    private $_volume;    
+    public function setVolume($volume)
+    {
+        $this->_volume = (float) $volume;
+    }  
+    public function getVolume()
+    {
+        if (empty($this->length) || empty($this->width) || empty($this->height)) {
+            return null;
+        }
+        
+        if ($this->_volume === null) {
+            $this->setVolume(
+                $this->length * $this->width * $this->height
+            );
+        }
+        
+        return $this->_volume;
+    }
+
+    $customers = Customer::find()
+        ->select([
+            '{{customer}}.*', // select customer 表所有的字段
+            'COUNT({{order}}.id) AS ordersCount' // 计算订单总数
+        ])
+        ->joinWith('orders') // 连接表
+        ->groupBy('{{customer}}.id') // 分组查询，以确保聚合函数生效
+        ->all();
+
+
+
+
+  
+
 
 
 
