@@ -176,9 +176,8 @@ server {
 #代理服务
   proxy_pass url nginx代理 location if in location limit_except
 
-  http方向代理：
-
-  #访问test.com/test_proxy.html时 方向代理到8080端口 (80端口对外开放)
+  http反向代理：
+  #访问test.com/test_proxy.html时 反向代理到8080端口 (80端口对外开放)
   server {
     listen 80;
     server_name localhost test.com;
@@ -220,11 +219,70 @@ server {
       server_name  xx.xx.xx.xx j.com;
       resoler 8.8.8.8;  #dns服务器
       location / {
-         proxy_pass http://$http_host$request_url;
+         proxy_pass http://$http_host$request_uri;
       }
     }
 
+  其他语法：
+  proxy_buffering on|off; 缓冲区
+  proxy_buffer_size 32k;
+  proxy_buffers 4 128k;
+  proxy_redirect default; 跳转重定向
+  proxy_set header field value; 头信息
+  proxy_hide_header
+  proxy_set_body
+  proxy_connect_timeout time; 连接超时
+  proxy_read_time
+  proxy_send_timeout
 
 
-#负载均衡调度器
+#负载均衡调度器(SLB)
+  负载均衡:
+  客户端->nginx(7层负载均衡 proxy_pass)->upstream server->服务
+  upstream name {...}  虚拟服务池  只能配置在http模块下
+
+  location / {
+    proxy_pass http://name;
+    include proxy_params;
+  }
+  //节点  说明 weight权重 down不参与负载均衡 backup备用  max_fails=10 允许多次失败 fail_timeout=10s 经过max_fail失败后，服务粘暂停时间 max_conns=10s 限制最大连接数
+  upstream name {
+    server xxx.com  weight=5;
+    server xxx.com:8080  backup;
+  }
+
+  轮询权重(upstream下)
+  weight(基于请求)
+  ip_hash; (ip分配 无法判断代理)
+  least_conn (最少连接数)
+  url_hash (1.7版本后 hash $requst_uri)
+
 #动态缓存
+  nginx代理缓存：(缓存位置 proxy_cache_path)
+  proxy_cache name|off;
+  proxy_cache_valid [code] time; 过期时间
+
+   http{
+    proxy_cache_path /opt/cache levels=1:2 keys_zone=imooc_cache:10m max_size=10g inactive=60m use_temp_path=off;
+    server{
+      location / {
+        proxy_cache imooc_cache;
+        proxy_cache_valid 200 304 12h;
+        proxy_cache_key $host$uri$is_args$args;
+        add_header Nginx-Cache "xxx";
+
+        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http 504;
+        include proxy_params;
+      }
+    }
+  }
+
+  设置不缓存
+  proxy_no_cache string;
+  if($request_uri ~ ^/(url3|login|register|password\/reset)) {
+    set $cookie_nocache 1;
+  }
+
+  proxy_no_cache $cookie_nocache $arg_nocache;
+
+#动静分离
