@@ -1,4 +1,4 @@
-路由重写.htaccess文件：
+路由重写.htaccess文件(隐藏index.php)：
 # use mod_rewrite for pretty URL support
 RewriteEngine on
 # if a directory or a file exists, use the request directly
@@ -6,6 +6,21 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 # otherwise forward the request to index.php
 RewriteRule . index.php
+
+advanced目录下的路由.htaccess(重定向)：
+# prevent directory listings
+Options -Indexes
+# follow symbolic links
+Options FollowSymlinks
+RewriteEngine on
+RewriteCond %{REQUEST_URI} ^/admin/$
+RewriteRule ^(admin)/$ /$1 [R=301,L]
+RewriteCond %{REQUEST_URI} ^/admin
+RewriteRule ^admin(/.+)?$ /backend/web/$1 [L,PT]
+RewriteCond %{REQUEST_URI} ^.*$
+RewriteRule ^(.*)$ /frontend/web/$1
+
+
 
 url美化：
 'urlManager' => [
@@ -116,7 +131,7 @@ try{
     $transaction->rollBack();
 }
 
- 
+
  查询构建器：yii\db\Query;
 
  $rows = (new \yii\db\Query())
@@ -136,16 +151,16 @@ try{
     batch()
     createCommand()
     distinct()
-    from() 
+    from()
     groupBy()
-    having() 
+    having()
     innerJoin()
-    join() 
-    max() 
-    min() 
-    one() 
+    join()
+    max()
+    min()
+    one()
     params()
-    select() 
+    select()
     union()
     where()
 
@@ -156,7 +171,7 @@ try{
     findOne(1)->updateCounters(['count' => 1]);  // UPDATE `post` SET `count` = `count` + 1 WHERE `id` = 1;
 
     脏属性：
-    yii\db\ActiveRecord::save() 保存 AR 实例时，只有 脏属性 被保存。 (===判读) 
+    yii\db\ActiveRecord::save() 保存 AR 实例时，只有 脏属性 被保存。 (===判读)
     ->getDirtyAttributes()  //脏属性
     ->getOldAttributes()    //原属性
 
@@ -180,7 +195,7 @@ try{
     afterValidate()
     beforeSave()
     afterSave()
-    
+
     删除数据delete()：
     beforeDelete()
     afterDelete()
@@ -248,13 +263,13 @@ try{
         if (empty($this->length) || empty($this->width) || empty($this->height)) {
             return null;
         }
-        
+
         if ($this->_volume === null) {
             $this->setVolume(
                 $this->length * $this->width * $this->height
             );
         }
-        
+
         return $this->_volume;
     }
 
@@ -266,13 +281,3 @@ try{
         ->joinWith('orders') // 连接表
         ->groupBy('{{customer}}.id') // 分组查询，以确保聚合函数生效
         ->all();
-
-
-
-
-  
-
-
-
-
-
