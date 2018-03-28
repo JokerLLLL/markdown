@@ -27,3 +27,12 @@ composer -v
 
 #yii2 后台模板(-vvv 显示安装过程)
 composer require dmstr/yii2-adminlte-asset "2.*" -vvv
+没安装则安装admin(rbac 可视化管理)
+composer require mdmsoft/yii2-admin "2.x-dev"
+
+# PHP 7.1 进行开发，而我本地是 PHP 7.0, 于是悲剧发生了
+删除 composer.lock 文件，重新执行 composer install，这样就能重新生成 composer.lock 文件了。
+
+#依赖composer.lock文件 可以通过 composer update 进行更新
+
+
