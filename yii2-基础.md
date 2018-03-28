@@ -253,11 +253,11 @@ try{
     ->all();
 
     //AR类构建 然后直接访问volume属性
-    private $_volume;    
+    private $_volume;
     public function setVolume($volume)
     {
         $this->_volume = (float) $volume;
-    }  
+    }
     public function getVolume()
     {
         if (empty($this->length) || empty($this->width) || empty($this->height)) {
