@@ -283,6 +283,63 @@ server {
     set $cookie_nocache 1;
   }
 
-  proxy_no_cache $cookie_nocache $arg_nocache;
+  proxy_no_cache $cookie_nocache $arg_nocache $arg_comment;
 
+#第四章
 #动静分离
+upstream php_api{
+   server 127.0.0.1:8080;
+}
+server {
+    liste 80;
+    server_name localhost;
+    access_log /var/log/host.access.log main;
+    root /opt/app/code;
+
+    location ~ \.php$ {
+       proxy_pass http:://php_api;
+       index index.html index.php;
+       root /opt/app/code;
+    }
+
+    location ~ \.(jpg|png|gif)$ {
+       expires 1h;
+       gzip on;
+       root /opt/app/code;
+    }
+
+    location / {
+       index index.html index.htm;
+    }
+
+    error_page 500 502 503 504 404 /50x.html;
+}
+
+#rewrite重写篇
+    rewrite regex replacement [flag];  url重写 server,location,if
+
+    .任意字符
+    ?重复0或1次
+    +重复1或更多次
+    *任意(贪婪匹配)
+    \d匹配数字
+    ^匹配开头
+    $匹配结尾
+    {n}重复n次
+    {n,}重复n或更多次
+    [C]匹配制定字符
+    [a-z]a到z任意一个
+    \ 转意
+
+    ()匹配括号的内容 通过$1 $2 调用
+
+    flag：  
+
+
+
+
+
+
+
+
+
