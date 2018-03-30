@@ -20,8 +20,6 @@ RewriteRule ^admin(/.+)?$ /backend/web/$1 [L,PT]
 RewriteCond %{REQUEST_URI} ^.*$
 RewriteRule ^(.*)$ /frontend/web/$1
 
-
-
 url美化：
 'urlManager' => [
         'enablePrettyUrl' => true,  //是否启用严格解析，如启用严格解析，要求当前请求应至少匹配1个路由规则
@@ -32,6 +30,8 @@ url美化：
     				"<controller:\w+>/<action:\w+>"=>"<controller>/<action>"
         ],
 ],
+
+后台配置：
 
 session + cookie :
   Yii::$app->session->set('name',$data);
