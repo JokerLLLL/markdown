@@ -291,10 +291,7 @@ upstream php_api{
    server 127.0.0.1:8080;
 }
 server {
-    liste 80;
-    server_name localhost;
-    access_log /var/log/host.access.log main;
-    root /opt/app/code;
+ 
 
     location ~ \.php$ {
        proxy_pass http:://php_api;
@@ -333,7 +330,124 @@ server {
 
     ()匹配括号的内容 通过$1 $2 调用
 
-    flag：  
+    [flag]：last,break,redirect,permanent   停止rewrite检查，302临时重定向， 301永久重定向。
+    (break 在root目录拼接路由 重定向) (last 在域名下重定向);
+
+
+    location / {
+       rewrite ^/course-(\d+)-(\d+)-(\d+)\.html$ /course/$1/$2/course_$3.html break;
+       if($http_user_agent ~* Chrome) {
+         rewrite ^/nginx http://coding.xxx.com redirect;
+       }
+
+       if(!-f $requset_filename) {
+         rewrite ^/(.*)$ http://www.google.com/$1 redirect;
+       }
+       index index.html
+    }
+
+
+#Nginx高级模块
+
+    ##secure_link_module模块
+
+    secure_link 和secure_link_md5
+
+    /download?md5=vv9r48d3q2rfdv0&expires=1231132
+
+    location / {
+       secure_link $arg_md5,$arg_expires; #获取url的md5和expires两个参数
+
+       secure_link_md5 "$secure_link_expires$uri imooc";  #加密规则
+       if($secure_link = "") {
+         return 403;
+       }
+       if($secure_link = 0) {
+         return 410;
+       }
+    }
+
+
+    ##geoip_module模块
+
+    基于IP地址匹配MaxMind GeoIP 二进制文件 读取IP所在地域信息；
+    yum install nignx-module-geoip
+    配置文件加载模块
+    load_module "modules/ngx_http_geoip_module.so";
+    load_module "modules/ngx_stream_geoip_module.so";
+    下载geolite的二进制源文件
+
+    geoip_county /ect/nginx/geoip/GeoIP.dat;
+    geoip_city /etc/nginx/geoip/GeoLiteCity.dat;
+    server{
+       listen 80；
+       server name localhost;
+       location / {
+         if($geoip_county_code != CN) {
+           return 403;
+         }
+         root /usr/share/nginx/html;
+         index index.html index.htm
+       }
+
+       location /myip {
+         default_type text/plain;
+         return 200 "$remote_addr $geoip_country_name $geoip_country_code $geoip_city";
+       }
+    }
+
+
+#HTTPS服务
+
+  https ssl连接->服务器发送公钥->客户的发送对称加密密码->对称秘钥连接传输数据
+
+        ssl连接->CA签名(包含公钥)->客户的发送对称加密密码->对称秘钥连接传输数据
+                  (客户端对数字进行CA校验 1成功公钥加密 2失败停止回话)(签名是服务端和第三方机构签名和对应的授权)
+
+  CA证书签名:
+      #openssl version
+      #nginx -v --with-http_ssl_module
+
+      1生成key密钥 2生成csr文件 3第三方公司生成CA文件(crt)
+
+      ssl on|off
+      ssl_certificate file;
+      ssl_certificate_key file;
+
+      server{
+         listen 443;
+         server_name 116.62.103.228;
+         ssl on;
+         ssl_certifilcate /etc/nginx/ssl_key/jesonc.crt;
+         ssl_certifilcate_key /etc/nginx/ssl_key/jesonc.key;
+         index index.html
+         location / {
+           root /opt/app/code;
+         }
+      }
+
+  https服务优化
+
+      激活keepalive长连接  keepalive_timeout 100;
+      设置ssl session缓存 ssl_session_cache shared::SSL:10m;  ssl_session_timeout 10m;
+
+
+#Lua开发
+
+      lua及基础语法:
+      
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
