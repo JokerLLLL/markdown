@@ -435,9 +435,46 @@ server {
 #Lua开发
 
       lua及基础语法:
-      
+      #!/usr/bin/lua 开头
+      --行注释
+
+      变量：
+      a = '\97\n\124';
+      布尔：nil和false    0和''都是true
+
+      sum = 0
+      while num<=100 do
+        sum = sum + 1
+        num = num + 1
+      end
+      print('sum=',sum)
+
+      if age>15 and sex == 'male' then
+          print('大于15的男性')
+      elseif sex~='female' and age<=15 then
+          print('小于16的男性')
+      else
+          local age=io.read()
+          print('your age is'..age)
+      end
+
+      ~=不等于
+      io.read()终端读取
+      io.write()终端写入
+      ..字符连接
 
 
+#nginx+lua环境
+  
+  nginx调用lua指令
+
+  灰度发布
+
+
+
+
+#架构篇！！！
+  
 
 
 
