@@ -474,7 +474,51 @@ server {
 
 
 #架构篇！！！
-  
+
+   虚拟主机优先级：
+      优先匹配则不再查找
+
+   location匹配优先级:
+      高优先级：
+      =   完全匹配
+      ^~  前缀匹配
+      低优先级：
+      ~    正则
+      \~*  正则
+
+
+   try_file：检查文件是否存在
+      location / {
+        try_files $uri $uri/ /index.php;
+      }
+
+   alias 和 root 区别：
+
+   location /requset_path/image/ {
+      root /local_path/image/;
+   }
+   http://www.imooc.com/request_path/image/cat.png  =>地址  /local_path/image/request_path/image/cat.png
+
+   location /requset_path/image/ {
+      alias /local_path/image/;
+   }
+   http://www.imooc.com/request_path/image/cat.png  =>地址  /local_path/image/cat.png
+
+
+   传递用户真实IP：
+   set x_real_ip = $remote_addr(第一级代理ip设置)
+
+   其他：
+      413 request entity too large 上传附件太大 client_max_bady_size
+      502 bad gateway 后端无响应
+      504 gateway time-out 后端服务执行超时
+
+##性能优化
+
+    
+
+
+
 
 
 
