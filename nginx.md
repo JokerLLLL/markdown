@@ -22,6 +22,8 @@ yum源配置：
 
 
 nginx -t -c /etc/nginx/nginx.conf    #检查配置是否语法错误
+nginx -s reload                      #重新加载配置文件
+service nginx restart                #nginx重启
 #nginx.conf语法说明：
 
 
@@ -291,7 +293,7 @@ upstream php_api{
    server 127.0.0.1:8080;
 }
 server {
- 
+
 
     location ~ \.php$ {
        proxy_pass http:://php_api;
@@ -465,7 +467,7 @@ server {
 
 
 #nginx+lua环境
-  
+
   nginx调用lua指令
 
   灰度发布
@@ -514,27 +516,3 @@ server {
       504 gateway time-out 后端服务执行超时
 
 ##性能优化
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

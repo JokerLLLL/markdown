@@ -45,6 +45,9 @@ netstat -luntp|grep 80   #查看监听端口
 tar -xzvf file.tar.gz
 tar -xjvf file.tar.bz2
 
+#rar
+rar -x file.rar
+
 #编译安装
 ./configure
 make
