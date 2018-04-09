@@ -12,6 +12,8 @@ ifconfig -a            #查看网卡
 ps aux|grep server.php        #查看进程
 pstree -ap|grep server.php    #查看进程树
 
+ll /proc/进程号               #通过进程号查看进程信息       
+
 ## kill命令
 kill -l    所有信号
 以下为中断信号：
