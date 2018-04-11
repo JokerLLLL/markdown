@@ -516,3 +516,71 @@ server {
       504 gateway time-out 后端服务执行超时
 
 ##性能优化
+    
+
+    ab压力测试：
+    ab -n 2000 -c 2 http://127.0.0.1/
+    -n总次数
+    -c并发数
+    -k是否长连接
+
+    返回数据说明：
+    Server Software:        BWS/1.1                               #服务器版本号
+    Server Hostname:        www.baidu.com
+
+    Coplete requests:      2000
+    Failed requests:        0
+    Write errors:           0
+    Total transferred:      1744000 bytes
+    HTML transferred:       454000 bytes
+    Requests per second:    43.24 [#/sec] (mean)                  #kps 重要数值
+    Time per request:       46.256 [ms] (mean)
+    Time per request:       23.128 [ms] (mean, across all concurrent requests)
+    Transfer rate:          36.82 [Kbytes/sec] received
+
+
+    #系统与nginx优化
+        文件句柄  
+          linux\Unix 一切皆文件 文件句柄是一个索引
+        设置方式
+          1系统全局方式 2用户局部修改 3进程局部性修改
+          1.和2.
+          vim /etc/sevurity/limits.conf
+
+            `
+            *    soft nproc 65535
+            *    hard nproc 65535
+            *    soft nofile 65535
+            *    hard nofile 65535
+            root soft nofile 25535
+            root hard nofile 25535
+            `
+          3.
+            worker_rlimit_nofile 35535;
+
+
+    #cup亲和与nginx优化
+      cat /proc/cpuinfo|grep "physical id"|sort|uniq|wc -l     物理核心
+      cat /proc/cpuinfo|grep "cpu cores"|uniq                  每核核心
+      top                                                      查看进程
+
+      配置：
+      worker_processes 2;
+      worker_cpu_affinity 01 10;
+      worker_cpu_affinity auto;
+
+      ps -eo pid,args,psr | grep [n]ginx
+
+
+
+##安全篇
+  1. 恶意行为
+      爬虫和恶意抓取，资源盗用
+      基础防盗链
+      secure_link_module
+      access_module-对后台基于Ip访问控制
+
+  2. 攻击手段
+      暴力破解密码
+      文件传漏洞
+      sql注入

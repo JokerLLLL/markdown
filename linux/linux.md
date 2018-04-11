@@ -44,11 +44,11 @@ netstat -luntp|grep 80   #查看监听端口
       -c 每隔一个固定时间，执行该netstat命令。
 
 #tar命令
-tar -xzvf file.tar.gz
+tar -xzvf file.tar.gz              -C  /tmp/ #指定解压目录      -c打包 -x解包 -v显示过程 -f指定打包后名
 tar -xjvf file.tar.bz2
 
 #rar
-rar -x file.rar
+rar -x file.rar 
 
 #编译安装
 ./configure
