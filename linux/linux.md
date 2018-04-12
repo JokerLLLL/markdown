@@ -70,3 +70,19 @@ sudo make install                     #编译安装
 
 #find 查找
 find / -name nginx*                   #匹配所有nginx的目录以及文件
+
+#vim
+命令行模式：
+    dd  删除所在行
+    yy  复制所在行
+    p   粘贴
+    u   撤销
+输入模式：
+    :set nu   设置行号
+    :set nonu 取消行号
+    :2        跳到第几行
+    /xx       查找xx  按n查找下一处
+编辑模式：
+  
+
+
