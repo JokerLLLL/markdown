@@ -36,8 +36,7 @@ tail -f /var/log/cron        #执行过的定时任务 (日志信息)
 
 #计划任务中的% 要是变成\%
 
-#每一分钟执行任务
-
+#每半分钟执行任务(用到了sleep 30s)
 */1 * * * * date >> /tmp/date.conf && sleep 30s && date >> /tmp/date.conf
-
+#每分钟任务
 */1 * * * * /usr/local/php  /data/wwwroot/default/hezi/advanced/yii clear/index >> /tmp/yii.log
