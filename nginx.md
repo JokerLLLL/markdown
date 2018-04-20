@@ -173,7 +173,15 @@ server {
       }
     }
 
+    valid_referers none|blocked|server_names|string...;//允许的规则
+    blocked:表示代理
 
+   第三方模块：
+   HttpAccessKeyModule 实现防盗链
+   accesskey on|off;
+   accesskey_hashmethod md5|sha-1;
+   accesskey_arg "key";
+   accesskey_signature "mypass$remote_addr";
 
 #代理服务
   proxy_pass url nginx代理 location if in location limit_except
@@ -516,7 +524,7 @@ server {
       504 gateway time-out 后端服务执行超时
 
 ##性能优化
-    
+
 
     ab压力测试：
     ab -n 2000 -c 2 http://127.0.0.1/
@@ -540,7 +548,7 @@ server {
 
 
     #系统与nginx优化
-        文件句柄  
+        文件句柄
           linux\Unix 一切皆文件 文件句柄是一个索引
         设置方式
           1系统全局方式 2用户局部修改 3进程局部性修改
