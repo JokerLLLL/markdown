@@ -13,7 +13,7 @@ echo -e   解析转移符    echo -e "\e[1;33mXXX\e[0mxxx"
 alias ls='ls --color=never' 别名
 
 快捷键::
-ctrl+a ctrl+e ctrl+u 到前 到后 清空
+ctrl+a  ctrl+e  ctrl+u 到前 到后 清空
 
 >log.txt 覆盖
 >>log.txt 追加

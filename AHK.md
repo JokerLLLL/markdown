@@ -57,3 +57,22 @@ while GetKeyState("F1", "P")  ; 当 F1 键实际被按住时.
     Click
 }
 return
+
+
+;按住Numpad0在按其他健 但Numpad0会单独无法工作 必须重新定义它的原有功能
+Numpad0 & Numpad1::MsgBox You pressed Numpad1 while holding down Numpad0.
+Numpad0::send() {Numpad0}  ;让 Numpad0 释放 时产生0
+
+
+;区分场景
+#IfWinActive, ahk_class Notepad
+^a::MsgBox 打开记事本情况 其他情况默认
+#c::MsgBox 打开记事本情况
+
+#IfWinActive
+#c::MsgBox 其他情况
+
+;无论numllock是否开启 热键效果相同
+NumpadEnd::
+
+
