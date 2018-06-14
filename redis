@@ -1,12 +1,27 @@
+Redis基础：
 Redis支持五种数据类型：string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。
 
-string：
+*string：
 SET name "bar"
 GET name
   // bar
 
+incr key //自增1
+decr key //自减1
+incrby key k //自增k
+decrby key k  //自减k
 
-hash:
+setnx key value //key不存在才设置 == set key value nx
+setxx key value //key存在才设置 (更新) == set key value xx
+mset key1 key2 ... //
+mget key1 key2 ... //
+getset key newvalue //设置新值 返回旧值
+append key value //追加(拼接) 返回字节长
+strlen key  //获取字节长
+
+
+
+*hash:
 HMSET myhash field1 "hello" field2 "world"
 HGET myhash field1
 HGET myhash field2
@@ -21,12 +36,84 @@ HEXISTS key field1   查询是否存在
 HLEN myhash          所需field数量
 HVAL
 
+hmget key field1 field2 ...
+hgetall key
 
-list:
-lpush listname first
-lpush listname second
-lpush listname third
-lrange listname 0 10
+hincrby key field k  //自增k
+
+hvals key //直返field的值
+hkeys key //返回field的名称
+
+
+
+*list:
+
+
+//插入
+rpush key value1 value2 ... //从右边插入列表
+lpush key value1 value2 ... //从左边
+
+linsert key before|after value newvalue  //在value前或是后插入
+
+//弹出
+lpop key //左边弹出元素 key + value 两个值
+rpop key //右边弹出元素
+
+//删除
+lrem key count value //删除value
+     //count < 0 右删count个value
+     //count > 0 左删count个value
+     //count = 0 全部删除value
+
+ltrim key start end  //修减列表
+
+//获取
+lrange key start end(包含end)
+lrange key 0 2   //0到2
+lrange key 0 -1  //0到最后一个
+lindex key 0    //第0个
+lindex key -1   //最后一个
+
+
+//更新
+lset key index newvalue 
+
+blpop key timeout //左弹出 为空列表时候 堵塞等待timeout再弹出 timeout=0 一直堵塞 等到有数值 弹出
+brpop key timeout //右弹出
+
+
+*set 集合 （无序 单一 相互交集api 小心使用）
+
+//增
+sadd key element  //存在 返回为0
+//删除
+srem key element 
+//查
+scard key //计算大小
+sismenmber key element //是否在集合中
+srandmember key count //随机取出count个 里面还存在
+spop key count //随机弹出count个 里面不存在了
+smenmber key //无序返回所有元素
+
+//集合间的使用
+sdiff key1 key2 //插集
+sinter key1 key2 //交集
+sunion key1 key2 //并集
+sdiff|sinter|sunion + store destkey #结果保存在destkey
+
+*zset 有序集合
+
+
+
+
+
+
+
+
+
+
+
+
 
 ********************************
 #操作key
@@ -36,3 +123,58 @@ EXISTS key
 EXPIRE key seconds   过期时间s
 EXPIRE key timestamp 时间戳过期时间
 PTTL key             过期剩余时间s
+
+
+###############################################################################
+
+安装 :
+yum install redis
+
+启动 ：
+systemctl start redis.service
+
+开机自启 ：
+systemctl enable redis.service
+
+/etc/redis.conf 配置文件
+    daemonize yes #开机自启
+    logfile #日志目录
+    dir #工作目录 
+    port #端口
+
+
+
+####基础api####
+
+keys *                  #遍历所以key 支持正则 得到所有key
+                        #热备 或 scan使用
+
+dbsize                  #key的总数
+
+exists key              #key是否存在
+			            #返回 0 或 1
+
+del key1 key2 ...       #删除key
+			            #返回 删除个数 或 nil
+
+expire key seconds      #key在多少秒过期
+ttl key                 #剩余秒数  -2不存在key或已过期 -1存在永不过期
+
+type key                # 返回 string hash list set zset nil
+
+
+>内部数据
+>单线程
+
+
+
+
+
+
+
+
+
+
+
+
+
