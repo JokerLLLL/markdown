@@ -1,7 +1,7 @@
 Redis基础：
 Redis支持五种数据类型：string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。
 
-*string：
+****************string：**********************
 SET name "bar"
 GET name
   // bar
@@ -21,7 +21,7 @@ strlen key  //获取字节长
 
 
 
-*hash:
+**************hash:*************************
 HMSET myhash field1 "hello" field2 "world"
 HGET myhash field1
 HGET myhash field2
@@ -46,7 +46,7 @@ hkeys key //返回field的名称
 
 
 
-*list:
+***************list:*******************************
 
 
 //插入
@@ -82,7 +82,8 @@ blpop key timeout //左弹出 为空列表时候 堵塞等待timeout再弹出 ti
 brpop key timeout //右弹出
 
 
-*set 集合 （无序 单一 相互交集api 小心使用）
+*****************set 集合 ****************************
+（无序 单一 相互交集api 小心使用）
 
 //增
 sadd key element  //存在 返回为0
@@ -101,8 +102,9 @@ sinter key1 key2 //交集
 sunion key1 key2 //并集
 sdiff|sinter|sunion + store destkey #结果保存在destkey
 
-*zset 有序集合
-
+**************zset 有序集合***************************************
+//增加
+zet
 
 
 
