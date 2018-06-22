@@ -1,7 +1,7 @@
 Redis基础：
 Redis支持五种数据类型：string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。
 
-****************string：**********************
+*****************************************  string  *******************************************
 SET name "bar"
 GET name
   // bar
@@ -21,7 +21,7 @@ strlen key  //获取字节长
 
 
 
-**************hash:*************************
+******************************************  hash  *******************************************************
 HMSET myhash field1 "hello" field2 "world"
 HGET myhash field1
 HGET myhash field2
@@ -46,7 +46,7 @@ hkeys key //返回field的名称
 
 
 
-***************list:*******************************
+******************************************  list  ***************************************************
 
 
 //插入
@@ -82,7 +82,8 @@ blpop key timeout //左弹出 为空列表时候 堵塞等待timeout再弹出 ti
 brpop key timeout //右弹出
 
 
-*****************set 集合 ****************************
+****************************************** set ***********************************************
+
 （无序 单一 相互交集api 小心使用）
 
 //增
@@ -102,32 +103,30 @@ sinter key1 key2 //交集
 sunion key1 key2 //并集
 sdiff|sinter|sunion + store destkey #结果保存在destkey
 
-**************zset 有序集合***************************************
+***************************************  zset ****************************************************
 //增加
-zet
+zadd key score element .... //score可以重复 element不能重复
+//删除
+zrem key element ...//可以删除多个
+//获取
+zscore key element  //获取元素分数
+//自增（负值代表减少）分数
+zincrby key number element //增加score 返回增加后的分数
+
+zcard key //返回元素个数
+zrand key element //返回所在排名 从0开始遍历
+zrang key start end [withscores] //遍历元素 是否查出分数
+zrangebyscore key score1 score2 [withscores] //通过分数排名 是否查出分数
+zcount key score1 score2 //分数之间有多少个
+zremrangbyrank key start end  //删除第几个到第几个排名的删除
+zremrangbyscore key score1 score2  //删除第几分到第几分的删除
+
+//补充
+zrevrank  zrevrange zrevrangebyscore zinterstore zuninonstore 
 
 
 
-
-
-
-
-
-
-
-
-
-********************************
-#操作key
-DEL key
-DUMP key
-EXISTS key
-EXPIRE key seconds   过期时间s
-EXPIRE key timestamp 时间戳过期时间
-PTTL key             过期剩余时间s
-
-
-###############################################################################
+################################ 基础redis信息 ###############################################
 
 安装 :
 yum install redis
@@ -138,38 +137,170 @@ systemctl start redis.service
 开机自启 ：
 systemctl enable redis.service
 
+配置文件：
 /etc/redis.conf 配置文件
     daemonize yes #开机自启
     logfile #日志目录
     dir #工作目录 
     port #端口
 
+>基础api
 
+config get *            #配置信息
 
-####基础api####
+config set key value    #临时配置
 
+info [select]           #信息查看
+
+dbsize                  #key的总数
+ 
 keys *                  #遍历所以key 支持正则 得到所有key
                         #热备 或 scan使用
 
-dbsize                  #key的总数
+dump key                #打印key的值
 
 exists key              #key是否存在
-			            #返回 0 或 1
+			                  #返回 0 或 1
 
 del key1 key2 ...       #删除key
 			            #返回 删除个数 或 nil
 
-expire key seconds      #key在多少秒过期
+expire key seconds      #设置key在多少秒过期
+
 ttl key                 #剩余秒数  -2不存在key或已过期 -1存在永不过期
 
 type key                # 返回 string hash list set zset nil
 
 
->内部数据
->单线程
+
+#######################################  Redis功能  ###########################################
+
+> 慢查询
+ 1.生命周期
+    发送命令->队列->执行命令->返回结果；
+    慢查询发生在第三阶段，
+ 2.两个配置 (slowlog-max-len=128; showlog-log-slower-than=1000)
+    a 先进先出队列 ，固定长度 ，保存在内存中。
+    b 慢查询阀值 ， 记录慢查询条数。
+
+> pipeline 流水线
+  n+命令 传输到服务端。
+  只能作用在一个redis节点。
+
+> 发布订阅
+  publish channel message 
+  
+  subscribe channel ...
+
+  unsubscribe channel ...
+
+> Bitmap 位图
+  setbit key offset value //返回覆盖前的值
+  getbit key offset        //0或1  不存在则0
+  bitcount key [start end] //直接为1的个数
+  bitop {op} {destkey}    // and交集 or并集 not非 xor异或
+  bitpos key targetBit [start end]   //
+ 
+
+ > HypeerLogLog (本质string)
+   pfadd key element ...  //添加数据统计
+   pfcount key //返回元素总数 element唯一性
+   pfmerge key_new key1 key2 //合并新的
+
+ > GEO (本质string)
+   geoadd key lon lat member ...//添加  geoadd place 116.28 39.5 beijing 115 33.8 xxx 
+   geopos key member ... //获取
+   geodist key member1 member2 [unit] //计算距离 m|km|mi|ft
+
+   //通过经纬度范围查询
+   georadius key lon lat radiu m|km|ft|mi [withcoord] [withdist] [withhash] [COUNT count] [asc|desc] [store key]  [storedist key]
+   //通过member查询
+     georadiusbymember key member radiu m|km|ft|mi [withcoord] [withdist] [withhash] [COUNT count] [asc|desc] [store key]  [storedist key]
+
+    //radiu 距离 ft尺 mi英里
+
+   //withcoord 结果是否包含经纬度
+   //withdist 结果是否包含距离中心位置的距离
+   //withhash 结果中包含geohash
+   //COUNT count 指定返回结果的数量
+   //asc|desc 距离中心位置的升序或降序排列
+   //store key 返回结果保存到指定的key中
+   //storedist key 返回结果距离中心节点的距离保存到指定键
+
+
+##################################### redis 持久化 #################################################
+
+ > RDB [快照]
+  1.机制生成RBD文件(二进制) 
+  2.触发机制
+    a. save命令 同步执行 堵塞
+       会覆盖老的RDB文件 
+    
+    b. bgsave命令 异步执行
+       fork子进程执行命令
+    
+    c. 自动
+       配置文件  seconds changes  
+       save      900      1
+       save      300      10
+       save      60       10000
+
+       dbfilename dump.rdb //生成文件
+       dir ./ 默认当前目录
+       stop-writes-on-bgsave-error yes //错误是否停止写了
+       rdbcompression yes //是否压缩
+       rdbchecksum yes //是否检验
+
+       最佳配置：
+       dbfilename dump-${port}.rdb
+       dir /xxx
+
+       其他触发机制：
+       全量复制。
+       debug reload。
+       shutdown。
+
+ > AOF [日志][级别更高]
+  1.原理 把命令追加到aof文件
+  2.aof策略
+    a. always 
+       写命令刷新到缓冲区，每条命令都写到aof文件
+    b. everysec
+       缓冲区，每秒fync到硬盘 (默认每秒) 可能丢失秒级别数据
+    c. no
+       系统决定
+  3.aof重写
+    a. 作用
+       减少占用量及加卡恢复速度
+    b. bgrewriteaof (命令 异步)
+       fork子进程 从内存回溯数据成命令
+    c. 配置文件
+       auto-aof-rewrite-min-size  重写aof需要的大小
+       auto-aof-rewrite-percentage aof文件增长率
+       aof-current-size 当前尺寸
+       aof-base-size 上次重写尺寸
+    d.使用
+      appendonly yes 开启aof
+      appendfilename "appendonly-${port}.aof" 文件名
+      appendfysync everysec                   每秒开启
+      dir /xxx                                路径
+      no-appendfsync-on-rewrite yes           
+      auto-aof-rewrite-min-size 64m
+      auto-aof-rewrite-percentage 100
 
 
 
+
+################################## redis主从复制 ###################################################
+
+  命令server-cli:  slaveof ip port 建立连接(异步复制)
+                   slaveof no one 关闭同步
+
+  配置文件:        slaveof ip port
+                   slave-read-only yes //从节点数据只读
+
+
+  
 
 
 
